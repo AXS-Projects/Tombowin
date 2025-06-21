@@ -1,5 +1,6 @@
 <?php
 $ticketFile = __DIR__ . '/data/tickets.json';
+$drawDate = date('c', strtotime('+1 week')); // data tombolei
 if (!file_exists($ticketFile)) {
     file_put_contents($ticketFile, json_encode([]));
 }
@@ -22,6 +23,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     } else {
         $message = 'Completați toate câmpurile!';
     }
+    if (!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest') {
+        header('Content-Type: application/json');
+        echo json_encode(['message' => $message]);
+        exit;
+    }
 }
 ?>
 <!DOCTYPE html>
@@ -34,10 +40,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <body>
     <h1>Bine ați venit la Tombowin!</h1>
     <p>Cumpărați tichete pentru șansa de a câștiga premii precum mașini și telefoane.</p>
+    <div id="countdown" data-end="<?= $drawDate ?>"></div>
 
     <?php if ($message): ?>
     <div class="message"><?= htmlspecialchars($message) ?></div>
     <?php endif; ?>
+    <div id="ajax-message" class="message" style="display:none"></div>
 
     <form id="ticket-form" method="post" class="ticket-form">
         <label>Nume:

@@ -34,3 +34,8 @@ h1 {
   background-color: #ddffdd;
   border: 1px solid #aaffaa;
 }
+
+#countdown {
+  font-weight: bold;
+  margin-bottom: 1rem;
+}
